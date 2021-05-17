@@ -6,7 +6,7 @@ import sys
 class game:
 
     def __init__(self):
-        print('One of you choose X and the other one O , X takes the first turn')
+        print('One player chooses X and the other one O , X takes the first turn')
         # positions of all inuts
         self.positions = []
         self.board = ['-', '-', '-',
