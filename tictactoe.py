@@ -1,174 +1,210 @@
-# Tic Tac Toe game
-# board
+# MODULES
+import pygame
 import sys
+import numpy as np
+
+# initializes pygame
+pygame.init()
+
+# ---------
+# CONSTANTS
+# ---------
+WIDTH = 600
+HEIGHT = 600
+LINE_WIDTH = 15
+WIN_LINE_WIDTH = 15
+BOARD_ROWS = 3
+BOARD_COLS = 3
+SQUARE_SIZE = 200
+CIRCLE_RADIUS = 60
+CIRCLE_WIDTH = 15
+CROSS_WIDTH = 25
+SPACE = 55
+# rgb: red green blue
+RED = (255, 0, 0)
+BG_COLOR = (28, 170, 156)
+LINE_COLOR = (23, 145, 135)
+CIRCLE_COLOR = (239, 231, 200)
+CROSS_COLOR = (66, 66, 66)
+
+# ------
+# SCREEN
+# ------
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption('TIC TAC TOE')
+screen.fill(BG_COLOR)
+
+# -------------
+# CONSOLE BOARD
+# -------------
+board = np.zeros((BOARD_ROWS, BOARD_COLS))
+
+# ---------
+# FUNCTIONS
+# ---------
 
 
-class game:
+def draw_lines():
+    # 1 horizontal
+    pygame.draw.line(screen, LINE_COLOR, (0, SQUARE_SIZE),
+                     (WIDTH, SQUARE_SIZE), LINE_WIDTH)
+    # 2 horizontal
+    pygame.draw.line(screen, LINE_COLOR, (0, 2 * SQUARE_SIZE),
+                     (WIDTH, 2 * SQUARE_SIZE), LINE_WIDTH)
 
-    def __init__(self):
-        print('One player chooses X and the other one O , X takes the first turn')
-        # positions of all inuts
-        self.positions = []
-        self.board = ['-', '-', '-',
-                      '-', '-', '-',
-                      '-', '-', '-']
+    # 1 vertical
+    pygame.draw.line(screen, LINE_COLOR, (SQUARE_SIZE, 0),
+                     (SQUARE_SIZE, HEIGHT), LINE_WIDTH)
+    # 2 vertical
+    pygame.draw.line(screen, LINE_COLOR, (2 * SQUARE_SIZE, 0),
+                     (2 * SQUARE_SIZE, HEIGHT), LINE_WIDTH)
 
-    def displayBoard(self):
-        print(self.board[0]+' | '+self.board[1]+' | '+self.board[2])
-        print(self.board[3]+' | '+self.board[4]+' | '+self.board[5])
-        print(self.board[6]+' | '+self.board[7]+' | '+self.board[8])
-        self.playersTurn()
 
-    # players Turn
+def draw_figures():
+    for row in range(BOARD_ROWS):
+        for col in range(BOARD_COLS):
+            if board[row][col] == 1:
+                pygame.draw.circle(screen, CIRCLE_COLOR, (int(col * SQUARE_SIZE + SQUARE_SIZE//2), int(
+                    row * SQUARE_SIZE + SQUARE_SIZE//2)), CIRCLE_RADIUS, CIRCLE_WIDTH)
+            elif board[row][col] == 2:
+                pygame.draw.line(screen, CROSS_COLOR, (col * SQUARE_SIZE + SPACE, row * SQUARE_SIZE + SQUARE_SIZE -
+                                                       SPACE), (col * SQUARE_SIZE + SQUARE_SIZE - SPACE, row * SQUARE_SIZE + SPACE), CROSS_WIDTH)
+                pygame.draw.line(screen, CROSS_COLOR, (col * SQUARE_SIZE + SPACE, row * SQUARE_SIZE + SPACE),
+                                 (col * SQUARE_SIZE + SQUARE_SIZE - SPACE, row * SQUARE_SIZE + SQUARE_SIZE - SPACE), CROSS_WIDTH)
 
-    def playersTurn(self):
 
-        if sorted(self.positions) == [0, 1, 2, 3, 4, 5, 6, 7, 8]:
-            print('Game over Its a tie')
-            self.finish()
+def mark_square(row, col, player):
+    board[row][col] = player
 
-        self.x_count = self.board.count('X')
-        self.o_count = self.board.count('O')
-        # win check
-        if self.x_count > 2 or self.o_count > 2:
-            # row check
-            if self.board[0] == self.board[1] == self.board[2] == 'X':
-                print('player X wins the game')
-                sys.exit()
 
-            if self.board[0] == self.board[1] == self.board[2] == 'O':
-                print('player O wins the game')
-                sys.exit()
-            if self.board[3] == self.board[4] == self.board[5] == 'X':
-                print('player X wins the game')
-                sys.exit()
-            if self.board[3] == self.board[4] == self.board[5] == 'O':
-                print('player O wins the game')
-                sys.exit()
-            if self.board[6] == self.board[7] == self.board[8] == 'X':
-                print('player X wins the game')
-                sys.exit()
-            if self.board[6] == self.board[7] == self.board[8] == 'O':
-                print('player O wins the game')
-                sys.exit()
-            # column check
-            if self.board[0] == self.board[3] == self.board[6] == 'X':
-                print('player X wins the game')
-                self.finish()
+def available_square(row, col):
+    return board[row][col] == 0
 
-            if self.board[0] == self.board[3] == self.board[6] == 'O':
-                print('player O wins the game')
-                self.finish()
 
-            if self.board[1] == self.board[4] == self.board[7] == 'X':
-                print('player X wins the game')
-                self.finish()
-            if self.board[1] == self.board[4] == self.board[7] == 'O':
-                print('player O wins the game')
-                self.finish()
-            if self.board[2] == self.board[5] == self.board[8] == 'X':
-                print('player X wins the game')
-                self.finish()
-            if self.board[2] == self.board[5] == self.board[8] == 'O':
-                print('player O wins the game')
-                self.finish()
+def is_board_full():
+    for row in range(BOARD_ROWS):
+        for col in range(BOARD_COLS):
+            if board[row][col] == 0:
+                return False
 
-            # diagnol check
-            if self.board[0] == self.board[4] == self.board[8] == 'X':
-                print('player X wins the game')
-                self.finish()
-            if self.board[0] == self.board[4] == self.board[8] == 'O':
-                print('player O wins the game')
-                self.finish()
-            # another diagnol
-            if self.board[2] == self.board[4] == self.board[6] == 'X':
-                print('player  X wins the game')
-                self.finish()
-            if self.board[2] == self.board[4] == self.board[6] == 'O':
-                print('player  O wins the game')
-                self.finish()
+    return True
 
-        if self.x_count == self.o_count:
 
-            self.player_x()
+def check_win(player):
+    # vertical win check
+    for col in range(BOARD_COLS):
+        if board[0][col] == player and board[1][col] == player and board[2][col] == player:
+            draw_vertical_winning_line(col, player)
+            return True
 
-        else:
+    # horizontal win check
+    for row in range(BOARD_ROWS):
+        if board[row][0] == player and board[row][1] == player and board[row][2] == player:
+            draw_horizontal_winning_line(row, player)
+            return True
 
-            self.player_o()
+    # asc diagonal win check
+    if board[2][0] == player and board[1][1] == player and board[0][2] == player:
+        draw_asc_diagonal(player)
+        return True
 
-    # player X
+    # desc diagonal win chek
+    if board[0][0] == player and board[1][1] == player and board[2][2] == player:
+        draw_desc_diagonal(player)
+        return True
 
-    def player_x(self):
-        # displaying the turn
-        print('player x turn ')
-        # Taking input from the user
-        self.x_input = int(input('Enter a number between 0-8: '))
-        # checking if the number is greater than 8
-        if self.x_input > 8 or self.x_input < 0:
-            self.x_input = int(input(
-                'Oops invalid index please enter a number between 0-8'))
-        # checking if the input is already filled or not
-        if self.x_input in self.positions:
-            print('The place is already occupied!!!!!!!!!!!!!!')
-            self.player_x()
-        else:
-            self.positions.append(self.x_input)
+    return False
 
-        self.player_x_fill()
 
-    # filling the board for player_x
+def draw_vertical_winning_line(col, player):
+    posX = col * SQUARE_SIZE + SQUARE_SIZE//2
 
-    def player_x_fill(self):
-        # removing the element from the given position
-        self.board.pop(self.x_input)
-        # placing x at the given position
-        self.board.insert(self.x_input, 'X')
-        # displaying board
-        self.displayBoard()
-        # calling players function
-        self.playersTurn()
+    if player == 1:
+        color = CIRCLE_COLOR
+    elif player == 2:
+        color = CROSS_COLOR
 
-    # player o
+    pygame.draw.line(screen, color, (posX, 15),
+                     (posX, HEIGHT - 15), LINE_WIDTH)
 
-    def player_o(self):
-        # displaying the turn
-        print('player o turn')
-        # Taking input from the user
-        self.o_input = int(input('Enter a number between 0-8 : '))
-        # checking if the number is greater than 8
-        if self.o_input > 8 or self.o_input < 0:
-            self.o_input = int(input(
-                'Oops invalid index please enter a number between 0-8'))
-        # checking if the input is already filled or not
-        if self.o_input in self.positions:
-            print('The place is already occupied!!!!!!!!!!!')
-            self.player_o()
-        else:
-            self.positions.append(self.o_input)
 
-        self.player_o_fill()
+def draw_horizontal_winning_line(row, player):
+    posY = row * SQUARE_SIZE + SQUARE_SIZE//2
 
-    # Filling the board for player o
-    def player_o_fill(self):
-        # removing the element from the given position
-        self.board.pop(self.o_input)
-        # placing x at the given position
-        self.board.insert(self.o_input, 'O')
-        # displaying board
-        self.displayBoard()
-        # calling palyers function
-        self.playersTurn()
+    if player == 1:
+        color = CIRCLE_COLOR
+    elif player == 2:
+        color = CROSS_COLOR
 
-    def finish(self):
-        self.option = input('Would you like to play again y/n')
-        self.option.lower()
-        if self.option == 'y':
-            g = game()
-            g.displayBoard()
-        else:
-            print('We hope you enjoyed!!!!')
+    pygame.draw.line(screen, color, (15, posY),
+                     (WIDTH - 15, posY), WIN_LINE_WIDTH)
+
+
+def draw_asc_diagonal(player):
+    if player == 1:
+        color = CIRCLE_COLOR
+    elif player == 2:
+        color = CROSS_COLOR
+
+    pygame.draw.line(screen, color, (15, HEIGHT - 15),
+                     (WIDTH - 15, 15), WIN_LINE_WIDTH)
+
+
+def draw_desc_diagonal(player):
+    if player == 1:
+        color = CIRCLE_COLOR
+    elif player == 2:
+        color = CROSS_COLOR
+
+    pygame.draw.line(screen, color, (15, 15),
+                     (WIDTH - 15, HEIGHT - 15), WIN_LINE_WIDTH)
+
+
+def restart():
+    screen.fill(BG_COLOR)
+    draw_lines()
+    for row in range(BOARD_ROWS):
+        for col in range(BOARD_COLS):
+            board[row][col] = 0
+
+
+draw_lines()
+
+# ---------
+# VARIABLES
+# ---------
+player = 1
+game_over = False
+
+# --------
+# MAINLOOP
+# --------
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             sys.exit()
 
+        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
 
-g = game()
-g.displayBoard()
+            mouseX = event.pos[0]  # x
+            mouseY = event.pos[1]  # y
+
+            clicked_row = int(mouseY // SQUARE_SIZE)
+            clicked_col = int(mouseX // SQUARE_SIZE)
+
+            if available_square(clicked_row, clicked_col):
+
+                mark_square(clicked_row, clicked_col, player)
+                if check_win(player):
+                    game_over = True
+                player = player % 2 + 1
+
+                draw_figures()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r:
+                restart()
+                player = 1
+                game_over = False
+
+    pygame.display.update()
